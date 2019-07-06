@@ -34,6 +34,62 @@ Reload privilege tables now? [Y/n] Y
 
 $ sudo mysql -u root -p
 
+Step 2: Setting Up SonarQube
+$ wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-6.6.zip
+$ sudo yum -y install unzip
+$ unzip sonarqube-6.6.zip
+$ sudo mysql -u root -p
+mysql> CREATE DATABASE sonar;
+Query OK, 1 row affected (0.00 sec)
+mysql> CREATE USER 'sonar' IDENTIFIED BY 'sonar';
+Query OK, 0 rows affected (0.00 sec)
+mysql> GRANT ALL ON sonar.* TO 'sonar'@'localhost' IDENTIFIED BY 'sonar';
+Query OK, 0 rows affected (0.00 sec)
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.00 sec)
+
+$ vi sonarqube-6.6/conf/sonar.properties
+# User credentials.
+# Permissions to create tables, indices and triggers must be granted to JDBC user.
+# The schema must be created first.
+sonar.jdbc.username=sonar
+sonar.jdbc.password=sonar
+
+#----- MySQL 5.6 or greater
+# Only InnoDB storage engine is supported (not myISAM).
+# Only the bundled driver is supported. It can not be changed.
+sonar.jdbc.url=jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance&useSSL=false
+
+# Binding IP address. For servers with more than one IP address, this property specifies which
+# address will be used for listening on the specified ports.
+# By default, ports will be used on all IP addresses associated with the server.
+sonar.web.host=0.0.0.0
+
+# Web context. When set, it must start with forward slash (for example /sonarqube).
+# The default value is root context (empty value).
+#sonar.web.context=
+# TCP port for incoming HTTP connections. Default value is 9000.
+sonar.web.port=9000
+
+http://serveripaddress:9000/dashboard/index/com.digi.proj1:JavaApp
+$ ./sonarqube-6.6/bin/linux-x86-64/sonar.sh start
+Starting SonarQube...
+Started SonarQube.
+$ ps -ef | grep sonar
+rsa-key+  6801     1  0 13:13 ?        00:00:00 /home/rsa-key-20190610/sonarqube-6.6/bin/linux-x86-64/./wrapper /home/rsa-key-20190610/sonarqube-6.6/bin/linux-x86-64/../../conf/wrapper.conf wrapper.syslog.ident=SonarQube wrapper.pidfile=/home/rsa-key-20190610/sonarqube-6.6/bin/linux-x86-64/./SonarQube.pid wrapper.daemonize=TRUE
+rsa-key+  6803  6801 16 13:13 ?        00:00:04 java -Dsonar.wrapped=true -Djava.awt.headless=true -Xms8m -Xmx32m -Djava.library.path=./lib -classpath ../../lib/jsw/wrapper-3.2.3.jar:../../lib/common/parent-join-client-5.6.2.jar:../../lib/common/percolator-client-5.6.2.jar:../../lib/common/commons-logging-1.1.3.jar:../../lib/common/httpcore-nio-4.4.5.jar:../../lib/common/httpasyncclient-4.1.2.jar:../../lib/common/httpcore-4.4.5.jar:../../lib/common/httpclient-4.3.6.jar:../../lib/common/elasticsearch-rest-client-5.6.2.jar:../../lib/common/reindex-client-5.6.2.jar:../../lib/common/netty-transport-4.1.13.Final.jar:../../lib/common/netty-resolver-4.1.13.Final.jar:../../lib/common/netty-handler-4.1.13.Final.jar:../../lib/common/netty-common-4.1.13.Final.jar:../../lib/common/netty-codec-http-4.1.13.Final.jar:../../lib/common/netty-codec-4.1.13.Final.jar:../../lib/common/netty-buffer-4.1.13.Final.jar:../../lib/common/transport-netty4-client-5.6.2.jar:../../lib/common/jna-4.4.0-1.jar:../../lib/common/HdrHistogram-2.1.9.jar:../../lib/common/t-digest-3.0.jar:../../lib/common/jackson-dataformat-cbor-2.8.6.jar:../../lib/common/jackson-dataformat-yaml-2.8.6.jar:../../lib/common/jackson-dataformat-smile-2.8.6.jar:../../lib/common/jackson-core-2.6.6.jar:../../lib/common/joda-time-2.9.5.jar:../../lib/common/hppc-0.7.1.jar:../../lib/common/jopt-simple-5.0.2.jar:../../lib/common/securesm-1.1.jar:../../lib/common/lucene-suggest-6.6.1.jar:../../lib/common/lucene-spatial3d-6.6.1.jar:../../lib/common/lucene-spatial-extras-6.6.1.jar:../../lib/common/lucene-spatial-6.6.1.jar:../../lib/common/lucene-sandbox-6.6.1.jar:../../lib/common/lucene-queryparser-6.6.1.jar:../../lib/common/lucene-queries-6.6.1.jar:../../lib/common/lucene-misc-6.6.1.jar:../../lib/common/lucene-memory-6.6.1.jar:../../lib/common/lucene-join-6.6.1.jar:../../lib/common/lucene-highlighter-6.6.1.jar:../../lib/common/lucene-grouping-6.6.1.jar:../../lib/common/lucene-backward-codecs-6.6.1.jar:../../lib/common/lucene-analyzers-common-6.6.1.jar:../../lib/common/lucene-core-6.6.1.jar:../../lib/common/elasticsearch-5.6.2.jar:../../lib/common/transport-5.6.2.jar:../../lib/common/snakeyaml-1.15.jar:../../lib/common/hazelcast-client-3.8.4.jar:../../lib/common/log4j-core-2.8.2.jar:../../lib/common/log4j-api-2.8.2.jar:../../lib/common/log4j-to-slf4j-2.8.2.jar:../../lib/common/sonar-main-6.6.jar:../../lib/common/guava-18.0.jar:../../lib/common/commons-lang-2.6.jar:../../lib/common/commons-io-2.4.jar:../../lib/common/commons-codec-1.8.jar:../../lib/common/logback-core-1.1.7.jar:../../lib/common/logback-classic-1.1.7.jar:../../lib/common/jul-to-slf4j-1.7.24.jar:../../lib/common/slf4j-api-1.7.24.jar:../../lib/common/hazelcast-3.8.4.jar:../../lib/common/sonar-process-6.6.jar:../../lib/sonar-application-6.6.jar -Dwrapper.key=02NDDIGQxrSMdYTx -Dwrapper.port=32000 -Dwrapper.jvm.port.min=31000 -Dwrapper.jvm.port.max=31999 -Dwrapper.pid=6801 -Dwrapper.version=3.2.3 -Dwrapper.native_library=wrapper -Dwrapper.service=TRUE -Dwrapper.cpu.timeout=10 -Dwrapper.jvmid=1 org.tanukisoftware.wrapper.WrapperSimpleApp org.sonar.application.App
+rsa-key+  6823  6803 26 13:13 ?        00:00:07 /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64/jre/bin/java -XX:+UseConcMarkSweepGC -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+AlwaysPreTouch -server -Xss1m -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djna.nosys=true -Djdk.io.permissionsUseCanonicalPath=true -Dio.netty.noUnsafe=true -Dio.netty.noKeySetOptimization=true -Dio.netty.recycler.maxCapacityPerThread=0 -Dlog4j.shutdownHookEnabled=false -Dlog4j2.disable.jmx=true -Dlog4j.skipJansi=true -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -Des.path.home=/home/rsa-key-20190610/sonarqube-6.6/elasticsearch -cp /home/rsa-key-20190610/sonarqube-6.6/elasticsearch/lib/* org.elasticsearch.bootstrap.Elasticsearch -Epath.conf=/home/rsa-key-20190610/sonarqube-6.6/temp/conf/es
+rsa-key+  6893  6803 71 13:13 ?        00:00:10 /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.212.b04-0.el7_6.x86_64/jre/bin/java -Djava.awt.headless=true -Dfile.encoding=UTF-8 -Djava.io.tmpdir=/home/rsa-key-20190610/sonarqube-6.6/temp -Xmx512m -Xms128m -XX:+HeapDumpOnOutOfMemoryError -cp ./lib/common/*:./lib/server/*:/home/rsa-key-20190610/sonarqube-6.6/lib/jdbc/mysql/mysql-connector-java-5.1.42.jar org.sonar.server.app.WebServer /home/rsa-key-20190610/sonarqube-6.6/temp/sq-process1506598826919637059properties
+rsa-key+  6950  3287  0 13:14 pts/0    00:00:00 grep --color=auto sonar
+$ netstat -npl | grep 9000
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp6       0      0 :::9000                 :::*                    LISTEN      6893/java
+
+$ mvn sonar:sonar
+
+
+
 
 
 
