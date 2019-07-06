@@ -1,0 +1,41 @@
+About SonarQube :
+https://docs.google.com/document/d/1z9YHu8ekZWsrHRMYMimN2GJpc4rRVM9c0HAyYRL5Uls/edit?usp=sharing
+
+Step 1: Install MySQL Server
+
+$ sudo yum -y install wget
+$ wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+
+Installs repo file
+$ sudo rpm -ivh mysql-community-release-el7-5.noarch.rpm
+Preparing...                          ################################# [100%]
+Updating / installing...
+   1:mysql-community-release-el7-5    ################################# [100%]
+
+$ sudo yum install -y mysql-server
+$ sudo systemctl start mysqld
+
+Starts on port 3306
+$ netstat -npl | grep 3306
+(No info could be read for "-p": geteuid()=1000 but you should be root.)
+tcp6       0      0 :::3306                 :::*                    LISTEN      -
+
+$ ps -ef | grep mysql
+mysql     5703     1  0 12:28 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe --basedir=/usr
+mysql     5869  5703  0 12:28 ?        00:00:00 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --log-error=/var/log/mysqld.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/lib/mysql/mysql.sock
+rsa-key+  5924  3287  0 12:30 pts/0    00:00:00 grep --color=auto mysql
+
+$ sudo mysql_secure_installation
+Set root password? [Y/n] Y
+Remove anonymous users? [Y/n] Y
+Disallow root login remotely? [Y/n] Y
+Remove test database and access to it? [Y/n] Y
+Reload privilege tables now? [Y/n] Y
+
+$ sudo mysql -u root -p
+
+
+
+
+
+
