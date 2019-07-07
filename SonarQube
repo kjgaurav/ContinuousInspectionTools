@@ -71,7 +71,6 @@ sonar.web.host=0.0.0.0
 # TCP port for incoming HTTP connections. Default value is 9000.
 sonar.web.port=9000
 
-http://serveripaddress:9000/dashboard/index/com.digi.proj1:JavaApp
 $ ./sonarqube-6.6/bin/linux-x86-64/sonar.sh start
 Starting SonarQube...
 Started SonarQube.
@@ -87,6 +86,8 @@ $ netstat -npl | grep 9000
 tcp6       0      0 :::9000                 :::*                    LISTEN      6893/java
 
 $ mvn sonar:sonar
+
+http://serverip:9000/dashboard/index/com.digi.proj2:WebApp
 
 
 
